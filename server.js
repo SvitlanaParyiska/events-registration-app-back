@@ -9,7 +9,7 @@ mongoose
   .then(() => {
     console.log("Database connection successful"),
       app.listen(port, () => {
-        console.log(`Server running. Use our API on port: ${PORT}`);
+        console.log(`Server running. Use our API on port: ${port}`);
       });
   })
   .catch((error) => {
