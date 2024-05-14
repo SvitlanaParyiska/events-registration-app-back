@@ -2,11 +2,18 @@ const { Event } = require("../models/event");
 const { ctrlWrapper, HttpError } = require("../helpers");
 
 const getAllEvents = async (req, res) => {
-  const result = await Event.find();
+  const { page = 1, limit = 12 } = req.query;
+  const skip = (page - 1) * limit;
+  const totalResults = await Event.find();
+  const result = await Event.find().limit(limit).skip(skip);
   if (!result) {
     throw HttpError(404, "Not found");
   }
-  res.json(result);
+  res.json({
+    events: result,
+    pages: Math.ceil(totalResults.length / limit),
+    total: totalResults.length,
+  });
 };
 
 const getEventById = async (req, res) => {
