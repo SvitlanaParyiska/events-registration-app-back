@@ -2,12 +2,25 @@ const { Event } = require("../models/event");
 const { ctrlWrapper, HttpError } = require("../helpers");
 
 const getAllEvents = async (req, res) => {
-  const { page = 1, limit = 12, filterName, filterValue } = req.query;
+  const {
+    page = 1,
+    limit = 12,
+    title = "",
+    date = "",
+    organizer = "",
+  } = req.query;
+
   const searchConditions = {};
-  if (filterName && filterValue) {
-    searchConditions[filterName] = { $regex: filterValue, $options: "i" };
+
+  if (title) {
+    searchConditions.title = { $regex: title, $options: "i" };
   }
-  console.log(searchConditions);
+  if (date) {
+    searchConditions.date = date;
+  }
+  if (organizer) {
+    searchConditions.organizer = { $regex: organizer, $options: "i" };
+  }
   const skip = (page - 1) * limit;
   const totalResults = await Event.find(searchConditions);
   const result = await Event.find(searchConditions).limit(limit).skip(skip);
