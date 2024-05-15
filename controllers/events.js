@@ -2,10 +2,15 @@ const { Event } = require("../models/event");
 const { ctrlWrapper, HttpError } = require("../helpers");
 
 const getAllEvents = async (req, res) => {
-  const { page = 1, limit = 12 } = req.query;
+  const { page = 1, limit = 12, filterName, filterValue } = req.query;
+  const searchConditions = {};
+  if (filterName && filterValue) {
+    searchConditions[filterName] = { $regex: filterValue, $options: "i" };
+  }
+  console.log(searchConditions);
   const skip = (page - 1) * limit;
-  const totalResults = await Event.find();
-  const result = await Event.find().limit(limit).skip(skip);
+  const totalResults = await Event.find(searchConditions);
+  const result = await Event.find(searchConditions).limit(limit).skip(skip);
   if (!result) {
     throw HttpError(404, "Not found");
   }
