@@ -16,11 +16,12 @@ const getAllEvents = async (req, res) => {
     searchConditions.title = new RegExp(title, "i");
   }
   if (date) {
-    searchConditions.date = date;
+    searchConditions.eventDate = new Date(date).toISOString();
   }
   if (organizer) {
     searchConditions.organizer = new RegExp(organizer, "i");
   }
+
   const skip = (page - 1) * limit;
   const totalResults = await Event.find(searchConditions);
   const result = await Event.find(searchConditions).limit(limit).skip(skip);
