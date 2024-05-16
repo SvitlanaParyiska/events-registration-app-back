@@ -25,8 +25,6 @@ const getAllEvents = async (req, res) => {
   const totalResults = await Event.find(searchConditions);
   const result = await Event.find(searchConditions).limit(limit).skip(skip);
 
-  console.log(searchConditions, totalResults, result);
-
   if (!result) {
     throw HttpError(404, "Not found");
   }
