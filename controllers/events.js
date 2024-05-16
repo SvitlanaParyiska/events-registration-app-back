@@ -13,17 +13,20 @@ const getAllEvents = async (req, res) => {
   const searchConditions = {};
 
   if (title) {
-    searchConditions.title = { $regex: title, $options: "i" };
+    searchConditions.title = new RegExp(title, "i");
   }
   if (date) {
     searchConditions.date = date;
   }
   if (organizer) {
-    searchConditions.organizer = { $regex: organizer, $options: "i" };
+    searchConditions.organizer = new RegExp(organizer, "i");
   }
   const skip = (page - 1) * limit;
   const totalResults = await Event.find(searchConditions);
   const result = await Event.find(searchConditions).limit(limit).skip(skip);
+
+  console.log(searchConditions, totalResults, result);
+
   if (!result) {
     throw HttpError(404, "Not found");
   }
